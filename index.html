@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ms paint</title>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="1000px" height="500px"></canvas>
+    <div class="controls">
+    <button id="reset" onclick="clearCanvas()">Reset</button>
+    <button id="radius" onclick="updateRadius(1)">Small brush</button>
+    <button id="radius" onclick="updateRadius(2)">Big brush</button>
+    <input type="color" id="color" value="Color">
+    </div>
+  </body>
+  <script>
+     function clearCanvas() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+function updateRadius(r) {
+  point.radius = r;
+}
+
+var points=new Array();	
+var color = "rgb(255,0,0)";
+function change(e){
+    color = this.value;
+}
+    document.getElementById("color").onchange = change;
+		function start(e){
+		  var mouseX = e.pageX - canvas.offsetLeft;
+		  var mouseY = e.pageY - canvas.offsetTop;
+		  paint = true;
+		  ctx.beginPath();
+		  ctx.moveTo(mouseX,mouseY);
+		  points[points.length]=[mouseX,mouseY];
+		};
+
+		function draw(e){
+		  if(paint){
+			 var mouseX = e.pageX - canvas.offsetLeft;
+			 var mouseY = e.pageY - canvas.offsetTop; 
+			 ctx.lineTo(mouseX,mouseY);
+			 ctx.stroke();	
+			 ctx.strokeStyle = color;
+			 ctx.lineJoin = ctx.lineCap = 'round';
+
+			 points[points.length]=[mouseX,mouseY];
+		  }
+		  
+		}
+		function stop(e){
+		  paint=false;
+		 var s=JSON.stringify(points);
+			localStorage['lines']=s;
+		}  
+	
+
+		
+		var paint=false;
+		var canvas = document.getElementById('myCanvas');
+		var ctx=canvas.getContext("2d");
+		canvas.addEventListener('mousedown',start);
+		canvas.addEventListener('mousemove',draw);
+		canvas.addEventListener('mouseup',stop);
+	
+
+        </script>
+        <style>
+            canvas {
+              border: 1px solid black;
+            
+            }
+            button{
+                width: 20%;
+                height: 30px;
+            }
+            
+        </style>
+</html>
